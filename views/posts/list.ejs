@@ -30,7 +30,11 @@
             {{#each .}}
             <tr>
                 <td>{{ID}}</td>
-                <td>{{TITLE}}</td>
+                <td>
+                    <a href="/posts/{{ID}}" class="text-decoration-none">
+                        {{TITLE}}
+                    </a>
+                </td>
                 <td>{{SNAME}}</td>
                 <td>{{FMT_DATE}}</td>
             </tr>

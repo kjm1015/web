@@ -30,7 +30,11 @@
                 url: '/posts/insert',
                 data: {title, content, writer:scode},
                 success:function(){
+                    alert("등록성공!");
                     location.href="/posts"
+                },
+                error:function(){
+                    alaert("등록실패!");
                 }
             })
         }

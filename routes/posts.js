@@ -18,18 +18,17 @@ router.post('/insert', async function(req, res) {
     const title=req.body.title;
     const content=req.body.content;
     const writer=req.body.writer;
-
-    var con;
+    
+    //console.log(title, content, writer);
+    let con;
 
     try{
         con = await getConnection();
-
-        var sql = "insert into posts(id, title, content, writer) values(post_id.nextval, :title, :content, :writer)";
-
-        con.execute(sql, {title, content, writer}, {autoCommit:true});
+        let sql = "insert into posts(title, content, writer) values(:title, :content, :writer)";
+        await con.execute(sql, {title, content, writer}, {autoCommit:true});
         res.sendStatus(200);
     }catch(err){
-        console.log(err);
+        console.log("게시글 등록", err.message);
     }finally{
         if(con) await con.close();
     }
@@ -38,61 +37,57 @@ router.post('/insert', async function(req, res) {
 // 게시글 삭제 
 router.post('/delete', async function(req, res) {
     const id = req.body.id;
-
-    var con;
+    let con;
 
     try{
         con = await getConnection();
-
-        var sql = 'delete from posts where id=:id';
-
+        let sql = 'delete from posts where id=:id';
         await con.execute(sql, {id}, {autoCommit:true});
-
         res.sendStatus(200);
     }catch(err){
-        console.log(err);
-    }finally{
-        if(con) await con.close();
-    }
-})
-
-// 게시글 수정 페이지
-router.get('/update/:id', async function(req, res) {
-    const id = req.params.id;
-
-    var con;
-
-    try{
-        con = await getConnection();
-
-        var sql = 'select * from view_posts where id = :id';
-
-        var result = await con.execute(sql, {id}, {outFormat:oracledb.OUT_FORMAT_OBJECT});
-
-        var post = result.rows[0];
-
-        res.render('index', {title: '글수정', pageName: 'posts/update.ejs', post});
-    }catch(err){
-        console.log(err);
+        console.log("게시글 삭제", err.message);
+        res.sendStatus(500);
     }finally{
         if(con) await con.close();
     }
 });
 
-// 게시글 수저
+// 게시글 수정 페이지
+router.get('/update/:id', async function(req, res) {
+    const id = req.params.id;
+    let con;
+
+    try{
+        con = await getConnection();
+        let sql = 'select * from view_posts where id = :id';
+        let result = await con.execute(sql, {id}, {outFormat:oracledb.OUT_FORMAT_OBJECT});
+        let post = result.rows[0];
+        res.render('index', {title: '게시글 수정', pageName: 'posts/update.ejs', post});
+    }catch(err){
+        console.log("게시글 수정", err.message);
+    }finally{
+        if(con) await con.close();
+    }
+});
+
+// 게시글 수정
 router.post('/update', async function(req, res){
     const id=req.body.id;
     const title=req.body.title;
     const content=req.body.content;
-    console.log(id, title, content);
+    let con;
     try{
         con = await getConnection();
         let sql="update posts set title=:title, content=:content where id=:id";
         await con.execute(sql, {id, title, content}, {autoCommit:true});
         res.sendStatus(200);
     }catch(err){
-        console.log('글수정', err.message);
+        console.log('게시글 수정', err.message);
+        res.sendStatus(500);
+    }finally{
+        if(con) await con.close();
     }
+
 });
 
 
@@ -126,5 +121,24 @@ router.get('/list.json', async function(req, res){
     }finally{
         if(con) await con.close();
     }
-})
+});
+
+
+//게시글 정보 페이지
+router.get('/:id', async function(req, res){
+    const id = req.params.id;
+    let con;
+
+    try{
+        con = await getConnection();
+        let sql = "select * from view_posts where id=:id";
+        let result = await con.execute(sql, {id}, {outFormat:oracledb.OUT_FORMAT_OBJECT});
+        let post = result.rows[0];
+        res.render('index', {title:'게시글 정보', pageName:'posts/read.ejs', post});
+    }catch(err){
+        console.log("게시글 정보", err.message);
+    }finally{
+        if(con) await con.close();
+    }
+});
 module.exports = router;

@@ -22,10 +22,10 @@
     </div>
 </div>
 <script>
-    const writer = $(".writer").html();
+    const writer = "<%=post.WRITER%>";
     const id = "<%=post.ID%>";
 
-    if(writer == sname){
+    if(writer == scode){
         $(".btn-modify").show();
     }else{
         $(".btn-modify").hide();
@@ -33,12 +33,17 @@
 
     $(".btn-delete").on("click", function(){
         if(confirm(`${id}번 게시글을 삭제하실래요?`)){
+            //게시글 삭제
             $.ajax({
                 type:"post",
                 url:"/posts/delete",
                 data:{id},
                 success:function(){
+                    alert("삭제 성공!");
                     location.href="/posts";
+                },
+                error:function(){
+                    alert("삭제 실패!");
                 }
             })
         }

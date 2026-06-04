@@ -3,7 +3,7 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-8">
             <form name="frm">
-                <input value="<%=post.TITLE%>" name="title" class="form-control mb-3" placeholder="제목을 입력하세요">
+                <input name="title" value="<%=post.TITLE%>" class="form-control mb-3" placeholder="제목을 입력하세요">
                 <textarea name="content" class="form-control mb-3" rows="15" placeholder="내용을 입력하세요"><%=post.CONTENT%></textarea>
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary px-5">저장</button>
@@ -20,16 +20,25 @@
         e.preventDefault();
         const title = $(frm.title).val();
         const content = $(frm.content).val();
-        console.log(id, title, content);
-        if(confirm(`${id}번 게시글을 수정하실래요?`)){
+        if(title==""){
+            alert("제목을 입력하세요!");
+        }else{
+            if(!confirm(`${id}번 게시글을 수정하실래요?`)){
+                return;
+            }
+                //게시글 수정
             $.ajax({
                 type:"post",
                 url:"/posts/update",
                 data:{id, title, content},
                 success:function(){
+                    alert("수정 성공!");
                     location.href=`/posts/${id}`;
+                },
+                error:function(){
+                    alert("수정 실패!");
                 }
-            })
+            })   
         }
     })
 </script>
