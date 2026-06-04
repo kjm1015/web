@@ -1,0 +1,71 @@
+<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">Navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul name="menu-list" class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-link">
+                <li class="nav-item">
+                    <a href="/" class="nav-link" aria-current="page">HOME</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/haksa/pro" class="nav-link">교수 관리</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/haksa/stu" class="nav-link">학생 관리</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/haksa/cou" class="nav-link">강좌 관리</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/posts" class="nav-link">게시글</a>
+                </li>
+            </li>
+        </ul>
+        <ul class="navbar-nav before">
+            <li class="nav-item">
+                <a href="/users/login" class="nav-link">로그인</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav after">
+            <li class="nav-item">
+                <a class="nav-link sname active" href="#"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link logout" href="#">로그아웃</a>
+            </li>
+        </ul>
+    </div>
+  </div>
+</nav>
+
+<script>
+    $(document).ready(function(){
+        const pathname=window.location.pathname;
+        const path=pathname.split('/').slice(0, 3).join('/');
+        $("menu-list").find(".nav-link").removeClass('active');
+        $(`.nav-link[href='${path}']`).addClass('active');
+    });
+
+    $(".logout").on("click", function(e){
+        e.preventDefault();
+        if(confirm("정말로 로그아웃하실래요?")){
+            sessionStorage.clear();
+            location.href='/';
+        }
+    })
+
+    const sname=sessionStorage.getItem("sname");
+    const scode=sessionStorage.getItem("scode");
+
+    if(sname){
+        $(".before").hide();
+        $(".after").show();
+        $(".sname").html(`${sname}(${scode})`);
+    }else{
+        $(".before").show();
+        $(".after").hide();
+    }
+</script>

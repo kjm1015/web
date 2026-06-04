@@ -1,0 +1,63 @@
+<div class="my-5">
+    <div class="row justify-content-center">
+        <div class="col-8 col-md-4 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center my-3">로그인</h3>
+                </div>
+                <div class="card-body">
+                    <form name="frm" method="post">
+                        <input name="scode" type="text" class="form-control mb-2" placeholder="학생번호">
+                        <input name="pass" type="password" class="form-control mb-2" placeholder="비밀번호">
+                        <button type="submit" class="btn btn-primary w-100">로그인</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(frm).on("submit", function(e){
+        e.preventDefault();
+
+        const scode = $(frm.scode).val();
+        const pass = $(frm.pass).val();
+
+        // 유효성 검사
+        if(scode == "") {
+            alert("학번을 입력하세요!");
+            $(frm.scode).focus();
+        }
+        else if(pass == ""){
+            alert("비밀번호를 입력하세요!");
+            $(frm.pass).focus();
+        }else{
+            // 로그인 체크
+            $.ajax({
+                type:"post",
+                url:"/users/login",
+                data:{scode, pass},
+                success:function(data){
+                    if(!data){
+                        alert("존재하지 않는 학번입니다.");
+                        $(frm.scode).focus();
+                    }
+                    else if(data.PASS != pass){
+                        alert("비밀번호가 틀렸습니다.");
+                        $(frm.pass).focus();
+                    }
+                    else{
+                        sessionStorage.setItem("sname", data.SNAME);
+                        sessionStorage.setItem("scode", data.SCODE);
+                        if(sessionStorage.getItem("target")){
+                            location.href=sessionStorage.getItem("target");
+                        }else{
+                            location.href="/";
+                        }
+                    }
+                }
+            })
+        }
+    })
+</script>
